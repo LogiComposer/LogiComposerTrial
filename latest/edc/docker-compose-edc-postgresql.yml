@@ -2,7 +2,7 @@ version: '2.3'
 services:
   zoomdata-edc-postgresql:
     hostname: zoomdata-edc-postgresql
-    image: ${EDC_REPO}zoomdata-edc-postgresql:${EDC_TAG}
+    image: ${EDC_REPO}zoomdata-edc-postgresql:${EDC_TAG:-latest}
     environment:
       DISCOVERY_REGISTRY_HOST: zoomdata-consul
     ports:

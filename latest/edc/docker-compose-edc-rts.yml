@@ -2,7 +2,7 @@ version: '2.3'
 services:
   zoomdata-edc-rts:
     hostname: zoomdata-edc-rts
-    image: ${EDC_REPO}zoomdata-edc-rts:${EDC_TAG}
+    image: ${EDC_REPO}zoomdata-edc-rts:${EDC_TAG:-latest}
     environment:
       DISCOVERY_REGISTRY_HOST: zoomdata-consul
     ports:

@@ -2,7 +2,7 @@ version: '2.3'
 services:
   zoomdata-edc-apache-solr:
     hostname: zoomdata-edc-apache-solr
-    image: ${EDC_REPO}zoomdata-edc-apache-solr:${EDC_TAG}
+    image: ${EDC_REPO}zoomdata-edc-apache-solr:${EDC_TAG:-latest}
     environment:
       DISCOVERY_REGISTRY_HOST: zoomdata-consul
     ports:

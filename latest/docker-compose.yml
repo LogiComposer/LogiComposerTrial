@@ -1,6 +1,6 @@
 version: '2.3'
 services:
-  # --- LogiComposer services (web, qe) --------
+  # --- Logi Composer services (web, qe) --------
   zoomdata-web:
     hostname: zoomdata-web
     image: ${ZD_REPO}zoomdata:${ZD_TAG}
@@ -12,8 +12,10 @@ services:
       - ./${CONFIG_SET}:/etc/zoomdata
       - ./logs:/opt/zoomdata/logs
     depends_on:
-      - zoomdata-postgres
-      - zoomdata-consul
+      zoomdata-postgres:
+        condition: service_healthy
+      zoomdata-consul:
+        condition: service_started
 
   zoomdata-query-engine:
     hostname: zoomdata-query-engine
@@ -27,8 +29,10 @@ services:
       - ./${CONFIG_SET}:/etc/zoomdata
       - ./logs:/opt/zoomdata/logs
     depends_on:
-      - zoomdata-postgres
-      - zoomdata-consul
+      zoomdata-postgres:
+        condition: service_healthy
+      zoomdata-consul:
+        condition: service_started
 
   # --- Infrastructure services (consul,postgres) -------------------
   zoomdata-consul:
@@ -36,13 +40,19 @@ services:
     image: consul:1.2.2
     ports:
       - 8500:8500
+      - 8300:8300
+      - 8301:8301
+      - 8302:8302
+      - 8300:8300/udp
+      - 8301:8301/udp
+      - 8302:8302/udp
     volumes:
       - ./data/consul:/consul/data
       - ./${CONFIG_SET}/consul:/consul/config
 
   zoomdata-postgres:
     hostname: zoomdata-postgres
-    image: postgres:9.5
+    image: postgres:12-alpine
     environment:
       - POSTGRES_DB=postgres
       - POSTGRES_HOST_AUTH_METHOD=trust
@@ -51,6 +61,11 @@ services:
     volumes:
       - ./data/pgdata:/var/lib/postgresql/data
       - ./${CONFIG_SET}/pginit:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 1s
+      timeout: 5s
+      retries: 500
 
   # --- Post Start setup docker container
   zoomdata-setup:

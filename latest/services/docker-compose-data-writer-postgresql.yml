@@ -2,9 +2,11 @@ version: '2.3'
 services:
   zoomdata-data-writer:
     hostname: zoomdata-data-writer
-    image: ${SW_REPO}data-writer-postgresql:${SW_TAG}
+    image: ${SW_REPO}data-writer-postgresql:${SW_TAG:-latest}
     environment:
       DISCOVERY_REGISTRY_HOST: zoomdata-consul
+      # this property has to contain uniq value across all started containers. (a.e. container hostname)
+      SPRING_CLOUD_CONSUL_DISCOVERY_INSTANCEID: zoomdata-data-writer
     ports:
       - 8081:8081
     volumes:
@@ -12,13 +14,12 @@ services:
       - ./logs:/opt/zoomdata/logs
     depends_on:
       - zoomdata-consul
-      - zoomdata-postgres
       - zoomdata-edc-postgresql
 
   # Postgres connector is required for the Postgres stream writer
   zoomdata-edc-postgresql:
     hostname: zoomdata-edc-postgresql
-    image: ${EDC_REPO}zoomdata-edc-postgresql:${EDC_TAG}
+    image: ${EDC_REPO}zoomdata-edc-postgresql:${EDC_TAG:-latest}
     environment:
       DISCOVERY_REGISTRY_HOST: zoomdata-consul
     ports:
