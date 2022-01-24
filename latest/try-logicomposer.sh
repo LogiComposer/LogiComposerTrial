@@ -17,9 +17,9 @@ mkdir -p data/pgdata
 
 docker-compose "$@"
 
-if [ "$1" == "up" ]; then
+if [ "$1" = "up" ]; then
     echo "Waiting for LogiComposer instance to start. Max 300 seconds"
-    until $(curl --output /dev/null --silent --head --fail http://zoomdata-web:8080); do
+    until curl --output /dev/null --silent --head --fail http://zoomdata-web:8080; do
         printf '.'
         sleep 1
         timeout_counter=$((timeout_counter+1))
