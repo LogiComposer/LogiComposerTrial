@@ -20,19 +20,19 @@ if [ $timeout_counter -lt $DEFAULT_TIMEOUT ]; then
     echo "Setting up predefined passwords"
     curl -L -X POST http://zoomdata-web:8080/composer/api/user/initUsers \
         -u "admin:admin" \
-        -H "Content-Type: application/vnd.composer.v2+json" \
+        -H "Content-Type: application/vnd.composer.v3+json" \
         -H "Accept: */*" \
         -d '[{"user": "admin", "password": "admin"}, {"user": "supervisor", "password": "supervisor"}]'
 
     echo "Importing RTS demo dashboard"
-    if ! curl -s -X GET -uadmin:admin "http://zoomdata-web:8080/composer/api/dashboards?byCurrentUser=true" -H "accept: application/vnd.composer.v2+json" | jq -r '(.bookmarksMap[].name == "RTS Sample Dashboard")' | grep -q true; then
+    if ! curl -s -X GET -uadmin:admin "http://zoomdata-web:8080/composer/api/dashboards?byCurrentUser=true" -H "accept: application/vnd.composer.v3+json" | jq -r '(.content != [] and .content[].name == "RTS Sample Dashboard")' | grep -q true; then
         VERSION=$(curl -s zoomdata-web:8080/composer/api/version | jq -r .version)
         echo "  extracted LogiComposer version: ${VERSION}"
-        sed -i "s/ZOOMDATA-VERSION-PLACEHOLDER/$VERSION/g" supply-files/rts-dashboard.json
+        jq 'walk(if type == "object" and .version then .version |= "'${VERSION}'" else . end)'  supply-files/rts-dashboard.json | \
         curl -u "admin:admin" -L -X POST \
-            -H "Content-Type: application/vnd.composer.v2+json" \
+            -H "Content-Type: application/vnd.composer.v3+json" \
             -H "Accept: */*" \
-            -d @supply-files/rts-dashboard.json \
+            -d @- \
             http://zoomdata-web:8080/composer/api/dashboards/import
     else
         echo "RTS sample dashboard is already present - skipping import"
