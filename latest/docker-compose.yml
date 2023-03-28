@@ -6,6 +6,8 @@ services:
     image: ${ZD_REPO}zoomdata:${ZD_TAG}
     environment:
       DISCOVERY_REGISTRY_HOST: zoomdata-consul
+      LOG_CONSOLE_LEVEL: ${LOG_CONSOLE_LEVEL}
+      LOG_FILE_LEVEL: ${LOG_FILE_LEVEL}
     ports:
       - 8080:8080
     volumes:
@@ -22,6 +24,8 @@ services:
     image: ${ZD_REPO}zoomdata-query-engine:${ZD_TAG}
     environment:
       DISCOVERY_REGISTRY_HOST: zoomdata-consul
+      LOG_CONSOLE_LEVEL: ${LOG_CONSOLE_LEVEL}
+      LOG_FILE_LEVEL: ${LOG_FILE_LEVEL}
     ports:
       - 5580:5580
       - 4040:4040
@@ -37,7 +41,7 @@ services:
   # --- Infrastructure services (consul,postgres) -------------------
   zoomdata-consul:
     hostname: zoomdata-consul
-    image: consul:1.2.2
+    image: consul:1.11.4
     ports:
       - 8500:8500
       - 8300:8300
