@@ -5,6 +5,8 @@ services:
     image: ${EDC_REPO}zoomdata-edc-postgresql:${EDC_TAG:-latest}
     environment:
       DISCOVERY_REGISTRY_HOST: zoomdata-consul
+      LOG_CONSOLE_LEVEL: ${LOG_CONSOLE_LEVEL}
+      LOG_FILE_LEVEL: ${LOG_FILE_LEVEL}
     ports:
       - 8105:8105
     volumes:
