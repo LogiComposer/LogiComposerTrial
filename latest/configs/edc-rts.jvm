@@ -1,8 +1,6 @@
 -server
 -Xms128m
 -Xmx1900m
--XX:+UseConcMarkSweepGC
--XX:+HeapDumpOnOutOfMemoryError
 -XX:HeapDumpPath=temp/edc-rts-dump
 -Djava.io.tmpdir=temp/edc-rts
 -Dlog.console.level=OFF
