@@ -10,10 +10,10 @@ set -e
 DEFAULT_TIMEOUT=300
 timeout_counter=0
 
-mkdir -p data
-mkdir -p logs
-mkdir -p data/consul
-mkdir -p data/pgdata
+mkdir -p data && chmod 777 data
+mkdir -p logs && chmod 777 logs
+mkdir -p data/consul && chmod 777 data/consul
+mkdir -p data/pgdata && chmod 777 data/pgdata
 
 docker-compose "$@"
 
